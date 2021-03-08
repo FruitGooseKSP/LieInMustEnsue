@@ -1,9 +1,10 @@
 # Lie In Must Ensue (L.I.M.E)
 DESCRIPTION
 
-On Kerbal Space Program, I personally don't enjoy launching rockets or planes etc in the dark so am an avid user of "Warp To Next Morning". Unfortunately, the game defines "Next Morning" as dawn, which is still too dark for my liking. 
+On Kerbal Space Program, I personally don't enjoy launching rockets or planes etc in the dark so am an avid user of "Warp To Next Morning". Unfortunately, the game 
+defines "Next Morning" as dawn, which is still too dark for my liking. 
 
-This mini-mod very simply changes the time that "Morning" is defined as (it sets it an hour later than stock) so now it is bright and sunny when it finishes warping.
+This mini-mod very simply changes the time that "Morning" is defined as (it sets it an hour later than stock) so now it is bright and sunny when it finishes warping!
 
 Go on, have yourself a lie in.
 
