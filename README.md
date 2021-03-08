@@ -1,4 +1,4 @@
-# LieInMustEnsue
+# Lie In Must Ensue (L.I.M.E)
 DESCRIPTION
 
 On Kerbal Space Program, I personally don't enjoy launching rockets or planes etc in the dark so am an avid user of "Warp To Next Morning". Unfortunately, the game defines "Next Morning" as dawn, which is still too dark for my liking. 
