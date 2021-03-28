@@ -1,10 +1,12 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using KSP.UI;
 using KSP.UI.Screens;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace LieInMustEnsue
 {
@@ -30,35 +32,40 @@ namespace LieInMustEnsue
 
         // menu options
         public string[] selString = new string[] { "Sunrise (Stock)", "Sunny", "Sunset", "Midnight" };
-        
+
+        // close button on menu
+        public bool closeBtn;
+
         // menu position reference, set for middle of the screen
         private Vector2 menuPR = new Vector2((Screen.width / 2) - 100, (Screen.height / 2) - 93);
 
         // menu size reference
-        private Vector2 menuSR = new Vector2(200, 186);
+        private Vector2 menuSR = new Vector2(200, 250);
 
         // the menu position holder
         private static Rect menuPos;
 
         
+        
 
         public void Awake()
         {
             // register game events
-
-            GameEvents.onGUIApplicationLauncherReady.Add(AddButton);
-            GameEvents.onGUIApplicationLauncherUnreadifying.Add(RemoveButton);       
+            if (HighLogic.LoadedScene == GameScenes.SPACECENTER && limeBtn == null)
+            {
+                GameEvents.onGUIApplicationLauncherReady.Add(AddButton);
+                GameEvents.onGUIApplicationLauncherUnreadifying.Add(RemoveButton);
+            }
         }
 
         private void RemoveButton(GameScenes gameScenes)
         {
             // remove the button
 
-            if (limeBtn.enabled)
-            {
-                ApplicationLauncher.Instance.RemoveModApplication(limeBtn);
-                btnIsPressed = false;
-            }
+            ApplicationLauncher.Instance.RemoveModApplication(limeBtn);
+            btnIsPressed = false;
+            btnIsPresent = false;
+            
         }
         private void AddButton()
         {
@@ -74,15 +81,14 @@ namespace LieInMustEnsue
         }
 
         private void ItsLimeTime()
-        {
+        { 
+
             // instantiate the menu
 
             menuPos = GUILayout.Window(123456, menuPos, MenuWindow,
-                "LIME Time Options", new GUIStyle(HighLogic.Skin.window));
+                "LIME Time Options", new GUIStyle(HighLogic.Skin.window));  
 
-        }
-
-      
+        }     
 
         private void MenuWindow(int windowID)
         {
@@ -95,11 +101,27 @@ namespace LieInMustEnsue
             selGridInt = GUI.SelectionGrid(new Rect(20, 50, 200, 186), selGridInt, selString, 1, new GUIStyle(HighLogic.Skin.toggle));
             
             GUILayout.EndHorizontal();
-            GUILayout.Space(100);
+            GUILayout.Space(25);
+
+            GUILayout.BeginHorizontal();
+
+            closeBtn = GUI.Button(new Rect(20, 200, 160, 25), "Close", new GUIStyle(HighLogic.Skin.button));
+
+            GUILayout.EndHorizontal();
             GUILayout.EndVertical();
             
             GUI.DragWindow();
 
+        }
+
+        // long winded way (but causes bugs otherwise) of invoking onFalse
+        public void CloseMenu()
+        {
+            onFalse();
+            onDisable();
+            btnIsPresent = false;
+            AddButton();
+            btnIsPresent = true;
         }
 
 
@@ -107,20 +129,39 @@ namespace LieInMustEnsue
         {
             // get the icons from file, preload menu position
 
-            limeOn = GameDatabase.Instance.GetTexture("FruitKocktail/LIME/Icons/limeon", false);
-            limeOff = GameDatabase.Instance.GetTexture("FruitKocktail/LIME/Icons/limeoff", false);
-            limeHover = GameDatabase.Instance.GetTexture("FruitKocktail/LIME/Icons/limehover", false);
-            menuPos = new Rect(menuPR, menuSR);
+            if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
+            {
+
+                limeOn = GameDatabase.Instance.GetTexture("FruitKocktail/LIME/Icons/limeon", false);
+                limeOff = GameDatabase.Instance.GetTexture("FruitKocktail/LIME/Icons/limeoff", false);
+                limeHover = GameDatabase.Instance.GetTexture("FruitKocktail/LIME/Icons/limehover", false);
+
+                menuPos = new Rect(menuPR, menuSR);
+            }
+            
             
         }
 
+
         public void Update()
         {
-            // handles change of mode by player
-
-            if (btnIsPresent)
+            
+            if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
             {
-                LIME.newMode = selGridInt;
+                // handles change of mode by player
+
+                if (btnIsPresent)
+                {
+                    LIME.newMode = selGridInt;
+                }
+
+                // handles close button being pressed on menu
+
+                if (closeBtn)
+                {
+                    CloseMenu();
+                    closeBtn = false;
+                }
             }
         }
 
@@ -172,26 +213,23 @@ namespace LieInMustEnsue
         }
 
         public void onEnable()
-        {      
-            // ie when button first enabled
+        {
+            GameEvents.onGUIApplicationLauncherReady.Add(AddButton);
+            GameEvents.onGUIApplicationLauncherUnreadifying.Add(RemoveButton);
         }
 
         public void onDisable()
         {
-            // ie when button is disabled
+            // ie when button is disabled / leave scene
 
             GameEvents.onGUIApplicationLauncherReady.Remove(AddButton);
             GameEvents.onGUIApplicationLauncherUnreadifying.Remove(RemoveButton);
-            OnDestroy();
-        }
-
-
-        public void OnDestroy()
-        {
-            // die button!
-
             ApplicationLauncher.Instance.RemoveModApplication(limeBtn);
+           
         }
+
+
+    
 
       
 
