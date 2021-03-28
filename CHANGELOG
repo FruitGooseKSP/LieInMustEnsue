@@ -7,3 +7,7 @@ Changelog
 1.0.1
 
 - recompile for KSP 1.11.2
+
+1.1.0
+
+- added toolbar button with options to select Sunrise (stock), Sunny (ie LIME Time), Sunset & Midnight.
