@@ -19,7 +19,7 @@ namespace LieInMustEnsue
         public Texture limeHover;
 
         // the toolbar button
-        public ApplicationLauncherButton limeBtn;
+        public static ApplicationLauncherButton limeBtn;
 
         // is button pressed?
         public bool btnIsPressed = false;
@@ -28,13 +28,13 @@ namespace LieInMustEnsue
         public bool btnIsPresent = false;
 
         // menu selection id
-        public int selGridInt = 1;
+        public static int selGridInt = 1;
 
         // menu options
-        public string[] selString = new string[] { "Sunrise (Stock)", "Sunny", "Sunset", "Midnight" };
+        public static string[] selString = new string[] { "Sunrise (Stock)", "Sunny", "Sunset", "Midnight" };
 
         // close button on menu
-        public bool closeBtn;
+        public static bool closeBtn;
 
         // menu position reference, set for middle of the screen
         private Vector2 menuPR = new Vector2((Screen.width / 2) - 100, (Screen.height / 2) - 93);
@@ -80,7 +80,7 @@ namespace LieInMustEnsue
             }
         }
 
-        private void ItsLimeTime()
+        private static void ItsLimeTime()
         { 
 
             // instantiate the menu
@@ -90,7 +90,7 @@ namespace LieInMustEnsue
 
         }     
 
-        private void MenuWindow(int windowID)
+        private static void MenuWindow(int windowID)
         {
             // menu defs
          
@@ -137,6 +137,11 @@ namespace LieInMustEnsue
                 limeHover = GameDatabase.Instance.GetTexture("FruitKocktail/LIME/Icons/limehover", false);
 
                 menuPos = new Rect(menuPR, menuSR);
+            }
+
+            else
+            {
+                onDisable();
             }
             
             
