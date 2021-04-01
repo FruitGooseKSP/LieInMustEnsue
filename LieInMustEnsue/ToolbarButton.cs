@@ -45,40 +45,45 @@ namespace LieInMustEnsue
         // the menu position holder
         private static Rect menuPos;
 
-        
-        
 
-        public void Awake()
+
+        public void Start()
         {
-            // register game events
-            if (HighLogic.LoadedScene == GameScenes.SPACECENTER && limeBtn == null)
+            // get the icons from file, preload menu position
+
+            if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
             {
-                GameEvents.onGUIApplicationLauncherReady.Add(AddButton);
-                GameEvents.onGUIApplicationLauncherUnreadifying.Add(RemoveButton);
-            }
-        }
 
-        private void RemoveButton(GameScenes gameScenes)
-        {
-            // remove the button
+                if (limeBtn != null)
+                {
+                    onDestroy();
+                    limeBtn = null;
+                }
 
-            ApplicationLauncher.Instance.RemoveModApplication(limeBtn);
-            btnIsPressed = false;
-            btnIsPresent = false;
-            
-        }
-        private void AddButton()
-        {
-            // add the button
+                limeOn = GameDatabase.Instance.GetTexture("FruitKocktail/LIME/Icons/limeon", false);
+                limeOff = GameDatabase.Instance.GetTexture("FruitKocktail/LIME/Icons/limeoff", false);
+                limeHover = GameDatabase.Instance.GetTexture("FruitKocktail/LIME/Icons/limehover", false);
 
-            if (!btnIsPresent)
-            {
-                limeBtn = ApplicationLauncher.Instance.AddModApplication(onTrue, onFalse, onHover, onHoverOut, onEnable, onDisable,
+                menuPos = new Rect(menuPR, menuSR);
+
+                limeBtn = ApplicationLauncher.Instance.AddModApplication(onTrue, onFalse, onHover, onHoverOut, null, null,
                     ApplicationLauncher.AppScenes.SPACECENTER, limeOff);
 
+
                 btnIsPresent = true;
+
+                if (btnIsPressed)
+                {
+                    limeBtn.SetTrue();
+                }
+                else limeBtn.SetFalse();
             }
+
+           
+
+
         }
+
 
         private static void ItsLimeTime()
         { 
@@ -113,39 +118,7 @@ namespace LieInMustEnsue
             GUI.DragWindow();
 
         }
-
-        // long winded way (but causes bugs otherwise) of invoking onFalse
-        public void CloseMenu()
-        {
-            onFalse();
-            onDisable();
-            btnIsPresent = false;
-            AddButton();
-            btnIsPresent = true;
-        }
-
-
-        public void Start()
-        {
-            // get the icons from file, preload menu position
-
-            if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
-            {
-
-                limeOn = GameDatabase.Instance.GetTexture("FruitKocktail/LIME/Icons/limeon", false);
-                limeOff = GameDatabase.Instance.GetTexture("FruitKocktail/LIME/Icons/limeoff", false);
-                limeHover = GameDatabase.Instance.GetTexture("FruitKocktail/LIME/Icons/limehover", false);
-
-                menuPos = new Rect(menuPR, menuSR);
-            }
-
-            else
-            {
-                onDisable();
-            }
-            
-            
-        }
+       
 
 
         public void Update()
@@ -164,7 +137,7 @@ namespace LieInMustEnsue
 
                 if (closeBtn)
                 {
-                    CloseMenu();
+                    limeBtn.SetFalse();
                     closeBtn = false;
                 }
             }
@@ -217,26 +190,17 @@ namespace LieInMustEnsue
             }
         }
 
-        public void onEnable()
+        public void onDestroy()
         {
-            GameEvents.onGUIApplicationLauncherReady.Add(AddButton);
-            GameEvents.onGUIApplicationLauncherUnreadifying.Add(RemoveButton);
-        }
-
-        public void onDisable()
-        {
-            // ie when button is disabled / leave scene
-
-            GameEvents.onGUIApplicationLauncherReady.Remove(AddButton);
-            GameEvents.onGUIApplicationLauncherUnreadifying.Remove(RemoveButton);
+            // when destroyed
             ApplicationLauncher.Instance.RemoveModApplication(limeBtn);
-           
+            limeBtn = null;
         }
 
 
-    
 
-      
+
+
 
 
 
