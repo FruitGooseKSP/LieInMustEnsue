@@ -10,7 +10,7 @@ using UnityEngine.UI;
 
 namespace LieInMustEnsue
 {
-    [KSPAddon(KSPAddon.Startup.SpaceCentre, false)]
+    [KSPAddon(KSPAddon.Startup.EveryScene, false)]
     public class ToolbarButton : MonoBehaviour
     {
         // button textures
@@ -46,6 +46,8 @@ namespace LieInMustEnsue
         private static Rect menuPos;
 
 
+     
+
 
         public void Start()
         {
@@ -77,6 +79,17 @@ namespace LieInMustEnsue
                     limeBtn.SetTrue();
                 }
                 else limeBtn.SetFalse();
+            }
+            else if (HighLogic.LoadedScene != GameScenes.SPACECENTER)
+            {
+                if (limeBtn != null)
+                {
+                    onDestroy();
+                    limeBtn = null;
+                    btnIsPresent = false;
+                }
+
+
             }
 
            
@@ -123,7 +136,7 @@ namespace LieInMustEnsue
 
         public void Update()
         {
-            
+
             if (HighLogic.LoadedScene == GameScenes.SPACECENTER)
             {
                 // handles change of mode by player
@@ -141,6 +154,16 @@ namespace LieInMustEnsue
                     closeBtn = false;
                 }
             }
+            else
+            {
+                if (limeBtn != null)
+                {
+                    onDestroy();
+                    limeBtn = null;
+                    btnIsPresent = false;
+                }
+            }
+            
         }
 
         public void OnGUI()
@@ -194,12 +217,14 @@ namespace LieInMustEnsue
         {
             // when destroyed
             ApplicationLauncher.Instance.RemoveModApplication(limeBtn);
+            Destroy(limeBtn);
+            btnIsPresent = false;
             limeBtn = null;
         }
 
 
 
-
+      
 
 
 
